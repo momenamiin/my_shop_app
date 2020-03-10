@@ -45,7 +45,31 @@ class ProductsProvider with ChangeNotifier {
     return _list.where((product) => product.isFavorite).toList();
   }
 
-  void addproduct() {
+  void addproduct(Product product) {
+    final newProduct = Product(
+      title: product.title,
+      price: product.price,
+      description: product.description,
+      imageUrl: product.imageUrl,
+      id: DateTime.now().toString(),
+    );
+    _list.add(newProduct);
+
+    notifyListeners();
+  }
+
+  void updateProduct(String id, Product newproduct) {
+    final prodidex = _list.indexWhere((prod) => prod.id == id);
+    if (prodidex >= 0) {
+      _list[prodidex] = newproduct;
+      notifyListeners();
+    } else {
+      print('....');
+    }
+  }
+
+  void deleteProduct(String id) {
+    _list.removeWhere((prod) => prod.id == id);
     notifyListeners();
   }
 
