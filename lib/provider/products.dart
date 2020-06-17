@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class Product with ChangeNotifier {
@@ -19,19 +20,21 @@ class Product with ChangeNotifier {
       @required this.imageUrl,
       this.isFavorite = false});
 
-  Future<void> toggleFavourite() async {
+  Future<void> toggleFavourite(String authToken, String userId) async {
     final oldStatus = isFavorite;
     isFavorite = !isFavorite;
     notifyListeners();
-    final url = 'https://flutter-shop-161d4.firebaseio.com/products/$id.json';
+    final url =
+        'https://flutter-shop-161d4.firebaseio.com/userFavorites/$userId/$id.json?auth=$authToken';
     try {
-      final response =
-          await http.patch(url, body: json.encode({'isFavorite': isFavorite}));
+      final response = await http.put(url, body: json.encode(isFavorite));
       if (response.statusCode >= 400) {
+        print("response is good");
         isFavorite = oldStatus;
         notifyListeners();
       }
     } catch (error) {
+      print("response is bad ,, catched error");
       isFavorite = oldStatus;
       notifyListeners();
     }
